@@ -6,7 +6,7 @@
 * 
 *  Name: Rachel Day      Student ID: 100057181            Date: 01/28/2019
 *
-*  Online (Heroku) Link: ________________________________________________________
+*  Online (Heroku) Link: border: https://lit-scrubland-16272.herokuapp.com/
 *
 ********************************************************************************/ 
 
@@ -15,6 +15,7 @@ var dataService = require('./data-service.js');
 const path = require("path");
 const express = require("express");
 var app = express();
+app.use(express.static(__dirname + '/public'));
 
 var HTTP_PORT = process.env.PORT || 8080;
 
@@ -34,15 +35,21 @@ app.get("/about", function(req,res){
 });
 
 app.get("/employees", function(req,res) {
-   res.json(dataService.getAllEmployees());
+   dataService.getAllEmployees().then( function(data) {
+      return res.json(data);
+   }).catch((err) => { "Error: " + err });
 });
 
 app.get("/managers", function(req,res) {
-   res.json(dataService.getAllManagers());
+   dataService.getAllManagers().then( function(data) {
+      return res.json(data);
+   }).catch((err) => { "Error: " + err });
 });
 
 app.get("/departments", function(req,res) {
-   res.json(dataService.getAllDepartments());
+   dataService.getAllDepartments().then( function(data) {
+      return res.json(data);
+   }).catch((err) => { "Error: " + err });
 });
 
 app.get('*', function(req, res){

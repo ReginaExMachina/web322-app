@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+body {
+    background-color: #80a2ff;
+    font-family: Raleway;
+}
+
+aside {
+    background-color: white;
+    border: 10px solid #e3e3e3;
+    border-radius: 15px;
+}
+
+article {
+    background-color: white;
+    border: 10px solid white;
+    border-radius: 15px;
+}
+
+h2 {
+    text-decoration: underline;
+}

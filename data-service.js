@@ -46,7 +46,9 @@ module.exports.getAllEmployees = function() {
 
 module.exports.getAllManagers = function() {
   return new Promise(function(resolve, reject) {
-    employees.length ? resolve(employees) : reject("No results returned for employees.");
+    employees.length ? resolve(
+      employees.findAll( { where: { isManager: true }
+    })) : reject("No results returned for employees.");
   })
 }
 module.exports.getAllDepartments = function() {
