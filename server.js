@@ -1,5 +1,5 @@
 /*********************************************************************************
-*  WEB322 – Assignment 02
+*  WEB322 – Assignment 03
 *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part 
 *  of this assignment has been copied manually or electronically from any other source 
 *  (including 3rd party web sites) or distributed to other students.
@@ -14,22 +14,35 @@ var dataService = require('./data-service.js');
 
 const path = require("path");
 const express = require("express");
+const multer = require("multer");
+const body-parser = require("body-parser");
 var app = express();
+
 app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var HTTP_PORT = process.env.PORT || 8080;
+
+const storage = multer.diskStorage({
+   destination: "/public/images/uploaded",
+   filename : function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname));
+   }
+});
+
+var upload = multer({ storage: storage });
 
 // call this function after the http server starts listening for requests
 function onHttpStart() {
   console.log("Express http server listening on: " + HTTP_PORT);
 }
 
-// setup a 'route' to listen on the default url path (http://localhost)
+// GET METHODS
+
 app.get("/", function(req,res){
    res.sendFile(path.join(__dirname, "/views/home.html"));
 });
 
-// setup another route to listen on /about
 app.get("/about", function(req,res){
    res.sendFile(path.join(__dirname, "/views/about.html"));
 });
@@ -46,14 +59,38 @@ app.get("/managers", function(req,res) {
    }).catch((err) => { "Error: " + err });
 });
 
-app.get("/departments", function(req,res) {
+app.get("/images", function (req,res) {
+    fs.readdir("./public/images/uploaded", function(err, data) {
+        res.render('images',{images:data}); 
+    });
+});
+
+app.get("/employees/add", function(req,res) {
    dataService.getAllDepartments().then( function(data) {
       return res.json(data);
    }).catch((err) => { "Error: " + err });
 });
 
+app.get("/images/add", function(req,res) {
+   res.sendFile(path.join(__dirname, "/views/addEmployee.html"));
+});
+
+app.get("/departments", function(req,res) {
+   res.sendFile(path.join(__dirname, "/views/addImage.html"));
+});
+
 app.get('*', function(req, res){
   res.sendFile(path.join(__dirname, "/views/404.html"));
+});
+
+// POST METHODS
+
+app.post("/employees/add", (req, res) => {
+    dataService.addEmployee(req.body).then((data) => {
+        res.redirect("/employees");
+    }).catch((err) => {
+        console.log(err);
+    });
 });
 
 // setup http server to listen on HTTP_PORT
