@@ -15,7 +15,8 @@ var dataService = require('./data-service.js');
 const path = require("path");
 const express = require("express");
 const multer = require("multer");
-const body-parser = require("body-parser");
+const bodyParser = require("body-parser");
+const fs = require('fs');
 var app = express();
 
 app.use(express.static(__dirname + '/public'));
@@ -48,9 +49,26 @@ app.get("/about", function(req,res){
 });
 
 app.get("/employees", function(req,res) {
-   dataService.getAllEmployees().then( function(data) {
-      return res.json(data);
-   }).catch((err) => { "Error: " + err });
+   if (req.query.status) {
+      dataService.getEmployeesByStatus(req.query.department).then( function(data) {
+         return res.json(data);
+      }).catch((err) => { "Error: " + err });      
+   }
+   else if (req.query.department) {
+      dataService.getEmployeesByDepartment(req.query.status).then( function(data) {
+         return res.json(data);
+      }).catch((err) => { "Error: " + err });      
+   }
+   else if (req.query.manager) {
+      dataService.getEmployeesByManager(req.query.manager).then( function(data) {
+         return res.json(data);
+      }).catch((err) => { "Error: " + err });      
+   }
+   else {
+      dataService.getAllEmployees().then( function(data) {
+         return res.json(data);
+      }).catch((err) => { "Error: " + err });
+   }
 });
 
 app.get("/managers", function(req,res) {
@@ -61,22 +79,22 @@ app.get("/managers", function(req,res) {
 
 app.get("/images", function (req,res) {
     fs.readdir("./public/images/uploaded", function(err, data) {
-        res.render('images',{images:data}); 
+        res.json({images:data}); 
     });
 });
 
 app.get("/employees/add", function(req,res) {
-   dataService.getAllDepartments().then( function(data) {
-      return res.json(data);
-   }).catch((err) => { "Error: " + err });
-});
-
-app.get("/images/add", function(req,res) {
    res.sendFile(path.join(__dirname, "/views/addEmployee.html"));
 });
 
-app.get("/departments", function(req,res) {
+app.get("/images/add", function(req,res) {
    res.sendFile(path.join(__dirname, "/views/addImage.html"));
+});
+
+app.get("/departments", function(req,res) {
+   dataService.getAllDepartments().then( function(data) {
+      return res.json(data);
+   }).catch((err) => { "Error: " + err });
 });
 
 app.get('*', function(req, res){
@@ -85,12 +103,14 @@ app.get('*', function(req, res){
 
 // POST METHODS
 
+app.post("/images/add", upload.single("photo"), (req, res) => {
+   res.redirect("/images");
+})
+
 app.post("/employees/add", (req, res) => {
-    dataService.addEmployee(req.body).then((data) => {
-        res.redirect("/employees");
-    }).catch((err) => {
-        console.log(err);
-    });
+   dataService.addEmployee(req.body).then ( function() {
+      res.redirect("/employees");
+   }).catch((err) => { "Error: " + err});
 });
 
 // setup http server to listen on HTTP_PORT

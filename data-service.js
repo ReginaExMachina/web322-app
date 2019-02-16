@@ -46,9 +46,12 @@ module.exports.getAllEmployees = function() {
 
 module.exports.getAllManagers = function() {
   return new Promise(function(resolve, reject) {
-    employees.length ? resolve(
-      employees.findAll( { where: { isManager: true }
-    })) : reject("No results returned for employees.");
+    if (employees.length) {
+      resolve(employees);
+    }
+    else {
+      reject("No results returned for managers");
+    }
   })
 }
 
@@ -58,36 +61,22 @@ module.exports.getAllDepartments = function() {
   })
 }
 
-module.exports.addEmployee = function(employeeData){
-    return new Promise(function (resolve, reject) {
-        var empNum = employeeData.length() + 1; 
-        employeeData.isManager = (employeeData.isManager) ? true : false;
-        for (const n in employeeData) {
-            if (employeeData[n] == "") employeeData[n] = null;
-        };
-        Employees.create({
-            employeeNum: empNUm,
-            firstName: employeeData.firstName,
-            lastName: employeeData.lastName,
-            email: employeeData.email,
-            SSN: employeeData.SSN,
-            addressStreet: employeeData.addressStreet,
-            addressCity: employeeData.addressCity,
-            addressState: employeeData.addressState,
-            addressPostal: employeeData.addressPostal,
-            maritalStatus: employeeData.maritalStatus,
-            isManager: employeeData.isManager,
-            employeeManagerNum: employeeData.employeeManagerNum,
-            status: employeeData.status,
-            department: employeeData.department,
-            hireDate: employeeData.hireDate
-        })
-        .then(()=>{
-            console.log("Created a new employee");
-            resolve(Employees[1]);
-        })
-        .catch(()=>{
-            reject("Failed to create employee");
-        });   
-    });
-};
+module.exports.addEmployee = (employeeData) => {
+  return new Promise((resolve, reject) => {
+    try {
+      employeeData.isManager = !(employeeData.isManager == undefined);
+      employeeData.employeNum = employees.length + 1;
+      employeeData.push(employeeData);
+      resolve();
+    } catch {
+      reject();
+    }
+  })
+}
+
+
+//module.exports.getEmployeesByDepartment(department)
+
+//module.exports.getEmployeesByManager(manager)
+
+//module.exports.getEmployeesByNum(num)
