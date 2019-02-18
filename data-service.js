@@ -44,16 +44,50 @@ module.exports.getAllEmployees = function() {
   })
 }
 
-module.exports.getAllManagers = function() {
-  return new Promise(function(resolve, reject) {
-    if (employees.length) {
-      resolve(employees);
-    }
-    else {
-      reject("No results returned for managers");
-    }
-  })
+module.exports.getEmployeesByStatus = function(status){
+  return new Promise((resolve, reject) => {
+      let filteredEmployees = employees.filter(employees => employees.status == status);
+      resolve(filteredEmployees);
+      if(filteredEmployees.length == 0)
+      reject("no results returned");
+  });
 }
+
+module.exports.getEmployeesByDepartment = function(department){
+  return new Promise((resolve, reject) => {
+      let filteredEmployees = employees.filter(employees => employees.department == department);
+      resolve(filteredEmployees);
+      if(filteredEmployees.length == 0)
+      reject("no results returned");
+  });
+}
+
+module.exports.getEmployeesByManager = function(manager){
+  return new Promise((resolve, reject) => {
+      let filteredEmployees = employees.filter(employees => employees.employeeManagerNum == manager);
+      resolve(filteredEmployees);
+      if(filteredEmployees.length == 0)
+      reject("no results returned");
+  });
+}
+
+module.exports.getEmployeesByNum = function(num){
+  return new Promise((resolve, reject) => {
+      let filteredEmployees = employees.filter(employees => employees.employeeNum == num);
+      resolve(filteredEmployees);
+      if(filteredEmployees.length == 0)
+      reject("no results returned");
+  });
+}
+
+module.exports.getAllManagers = function(){
+  return new Promise((resolve, reject) => {
+      let managers = employees.filter(employees => employees.isManager == true);
+      resolve(managers);
+      if(employees.length == 0)
+      reject("no results returned");
+  });
+};
 
 module.exports.getAllDepartments = function() {
   return new Promise(function(resolve, reject) {
@@ -73,10 +107,3 @@ module.exports.addEmployee = (employeeData) => {
     }
   })
 }
-
-
-//module.exports.getEmployeesByDepartment(department)
-
-//module.exports.getEmployeesByManager(manager)
-
-//module.exports.getEmployeesByNum(num)

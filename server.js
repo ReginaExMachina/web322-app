@@ -48,6 +48,13 @@ app.get("/about", function(req,res){
    res.sendFile(path.join(__dirname, "/views/about.html"));
 });
 
+app.get('/employee/:employeeNum', (req, res) => {
+   dataService.getEmployeesByNum(req.params.employeeNum)
+   .then((data) => {
+      res.json(data);
+   })
+})
+
 app.get("/employees", function(req,res) {
    if (req.query.status) {
       dataService.getEmployeesByStatus(req.query.department).then( function(data) {
