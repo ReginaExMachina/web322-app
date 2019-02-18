@@ -121,7 +121,7 @@ app.post("/employees/add", (req, res) => {
 });
 
 // setup http server to listen on HTTP_PORT
-dataService.initialize().then(
+dataService.initialize().then(\
    app.listen(HTTP_PORT, onHttpStart)
 )
 .catch((err)=> { console.log("Error: " + err)
