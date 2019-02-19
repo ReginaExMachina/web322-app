@@ -49,36 +49,34 @@ module.exports.getAllEmployees = function() {
 module.exports.getEmployeesByStatus = function(status){
   return new Promise((resolve, reject) => {
       let filteredEmployees = employees.filter(employees => employees.status == status);
+      // if(filteredEmployees.length == 0)
+      // reject("No results returned");
       resolve(filteredEmployees);
-      if(filteredEmployees.length == 0)
-      reject("No results returned");
   });
 }
 
 module.exports.getEmployeesByDepartment = function(department){
   return new Promise((resolve, reject) => {
-      let filteredEmployees = employees.filter(employees => employees.department == department);
+      let filteredEmployees = employees.filter(employee => employee.department == department);
       resolve(filteredEmployees);
-      if(filteredEmployees.length == 0)
-      reject("No results returned");
   });
 }
 
 module.exports.getEmployeesByManager = function(manager){
   return new Promise((resolve, reject) => {
-      let filteredEmployees = employees.filter(employees => employees.employeeManagerNum == manager);
+      let filteredEmployees = employees.filter(employee => employee.employeeManagerNum == manager);
+      // if(filteredEmployees.length == 0)
+      // reject("No results returned");
       resolve(filteredEmployees);
-      if(filteredEmployees.length == 0)
-      reject("No results returned");
   });
 }
 
 module.exports.getEmployeesByNum = function(num){
   return new Promise((resolve, reject) => {
-      let filteredEmployees = employees.filter(employees => employees.employeeNum == num);
+      let filteredEmployees = employees.filter(employee => employee.employeeNum == num);
       resolve(filteredEmployees);
-      if(filteredEmployees.length == 0)
-      reject("No results returned");
+      // if(filteredEmployees.length == 0)
+      // reject("No results returned");
   });
 }
 
@@ -96,8 +94,8 @@ module.exports.addEmployee = (employeeData) => {
   return new Promise((resolve, reject) => {
     try {
       employeeData.isManager = !(employeeData.isManager == undefined);
-      employeeData.employeNum = employees.length + 1;
-      employeeData.push(employeeData);
+      employeeData.employeeNum = employees.length + 1;
+      employees.push(employeeData);
       resolve();
     } catch {
       var errorMsg = "Failed to create new employee.";

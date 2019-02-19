@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var HTTP_PORT = process.env.PORT || 8080;
 
 const storage = multer.diskStorage({
-   destination: "/public/images/uploaded",
+   destination: "./public/images/uploaded",
    filename : function (req, file, cb) {
       cb(null, Date.now() + path.extname(file.originalname));
    }
