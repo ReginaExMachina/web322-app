@@ -38,6 +38,8 @@ module.exports.initialize = function () {
   })
 }
 
+ /******** EMPLOYEE FUNCTIONS *******************************/
+
 module.exports.getAllEmployees = function() {
   return new Promise(function(resolve, reject) {
     employees.length ? resolve(employees) : reject("No results returned for employees.");
@@ -49,7 +51,7 @@ module.exports.getEmployeesByStatus = function(status){
       let filteredEmployees = employees.filter(employees => employees.status == status);
       resolve(filteredEmployees);
       if(filteredEmployees.length == 0)
-      reject("no results returned");
+      reject("No results returned");
   });
 }
 
@@ -58,7 +60,7 @@ module.exports.getEmployeesByDepartment = function(department){
       let filteredEmployees = employees.filter(employees => employees.department == department);
       resolve(filteredEmployees);
       if(filteredEmployees.length == 0)
-      reject("no results returned");
+      reject("No results returned");
   });
 }
 
@@ -67,7 +69,7 @@ module.exports.getEmployeesByManager = function(manager){
       let filteredEmployees = employees.filter(employees => employees.employeeManagerNum == manager);
       resolve(filteredEmployees);
       if(filteredEmployees.length == 0)
-      reject("no results returned");
+      reject("No results returned");
   });
 }
 
@@ -76,24 +78,19 @@ module.exports.getEmployeesByNum = function(num){
       let filteredEmployees = employees.filter(employees => employees.employeeNum == num);
       resolve(filteredEmployees);
       if(filteredEmployees.length == 0)
-      reject("no results returned");
+      reject("No results returned");
   });
 }
 
+// MANAGERS
 module.exports.getAllManagers = function(){
   return new Promise((resolve, reject) => {
       let managers = employees.filter(employees => employees.isManager == true);
       resolve(managers);
       if(employees.length == 0)
-      reject("no results returned");
+      reject("No results returned");
   });
 };
-
-module.exports.getAllDepartments = function() {
-  return new Promise(function(resolve, reject) {
-    departments.length ? resolve(departments) : reject("No results returned for departments.");
-  })
-}
 
 module.exports.addEmployee = (employeeData) => {
   return new Promise((resolve, reject) => {
@@ -103,7 +100,15 @@ module.exports.addEmployee = (employeeData) => {
       employeeData.push(employeeData);
       resolve();
     } catch {
-      reject();
+      var errorMsg = "Failed to create new employee.";
+      reject(errorMsg);
     }
+  })
+}
+ /******** DEPARTMENT FUNCTIONS *******************************/
+
+module.exports.getAllDepartments = function() {
+  return new Promise(function(resolve, reject) {
+    departments.length ? resolve(departments) : reject("No results returned for departments.");
   })
 }

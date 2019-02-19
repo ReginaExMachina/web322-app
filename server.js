@@ -38,7 +38,7 @@ function onHttpStart() {
   console.log("Express http server listening on: " + HTTP_PORT);
 }
 
-// GET METHODS
+// ******** GET METHODS **************************************************
 
 app.get("/", function(req,res){
    res.sendFile(path.join(__dirname, "/views/home.html"));
@@ -48,12 +48,14 @@ app.get("/about", function(req,res){
    res.sendFile(path.join(__dirname, "/views/about.html"));
 });
 
+//  EMPLOYEE
+
 app.get('/employee/:employeeNum', (req, res) => {
    dataService.getEmployeesByNum(req.params.employeeNum)
    .then((data) => {
       res.json(data);
    })
-})
+});
 
 app.get("/employees", function(req,res) {
    if (req.query.status) {
@@ -78,50 +80,56 @@ app.get("/employees", function(req,res) {
    }
 });
 
+app.get("/employees/add", function(req,res) {
+   res.sendFile(path.join(__dirname, "/views/addEmployee.html"));
+});
+
 app.get("/managers", function(req,res) {
    dataService.getAllManagers().then( function(data) {
       return res.json(data);
    }).catch((err) => { "Error: " + err });
 });
 
+// ******** IMAGES ********************************************** //
 app.get("/images", function (req,res) {
     fs.readdir("./public/images/uploaded", function(err, data) {
         res.json({images:data}); 
     });
 });
 
-app.get("/employees/add", function(req,res) {
-   res.sendFile(path.join(__dirname, "/views/addEmployee.html"));
-});
-
 app.get("/images/add", function(req,res) {
    res.sendFile(path.join(__dirname, "/views/addImage.html"));
 });
 
+// DEPARTMENTS
 app.get("/departments", function(req,res) {
    dataService.getAllDepartments().then( function(data) {
       return res.json(data);
    }).catch((err) => { "Error: " + err });
 });
 
+// 404
 app.get('*', function(req, res){
   res.sendFile(path.join(__dirname, "/views/404.html"));
 });
 
-// POST METHODS
 
-app.post("/images/add", upload.single("photo"), (req, res) => {
+// ******** POST METHODS **************************************************
+
+app.post("/images/add", upload.single("imageFile"), (req, res) => {
    res.redirect("/images");
-})
-
-app.post("/employees/add", (req, res) => {
-   dataService.addEmployee(req.body).then ( function() {
-      res.redirect("/employees");
-   }).catch((err) => { "Error: " + err});
 });
 
-// setup http server to listen on HTTP_PORT
-dataService.initialize().then(\
+app.post("/employees/add", (req, res) => {
+   dataService.addEmployee(req.body).then (
+      res.redirect("/employees")
+   ).catch((err) => { "Error: " + err});
+});
+
+
+// ******** SERVER LISTENS **************************************************
+
+dataService.initialize().then(
    app.listen(HTTP_PORT, onHttpStart)
 )
 .catch((err)=> { console.log("Error: " + err)
