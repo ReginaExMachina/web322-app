@@ -59,18 +59,18 @@ app.get('/employee/:employeeNum', (req, res) => {
 
 app.get("/employees", function(req,res) {
    if (req.query.status) {
-      dataService.getEmployeesByStatus(req.query.department).then( function(data) {
-         return res.json(data);
+      dataService.getEmployeesByStatus(req.query.status).then( function(data) {
+         res.json(data);
       }).catch((err) => { "Error: " + err });      
    }
    else if (req.query.department) {
-      dataService.getEmployeesByDepartment(req.query.status).then( function(data) {
-         return res.json(data);
+      dataService.getEmployeesByDepartment(req.query.department).then( function(data) {
+         res.json(data);
       }).catch((err) => { "Error: " + err });      
    }
    else if (req.query.manager) {
       dataService.getEmployeesByManager(req.query.manager).then( function(data) {
-         return res.json(data);
+         res.json(data);
       }).catch((err) => { "Error: " + err });      
    }
    else {
