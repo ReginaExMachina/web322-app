@@ -6,7 +6,7 @@
 * 
 *  Name: Rachel Day      Student ID: 100057181            Date: 01/28/2019
 *
-*  Online (Heroku) Link: border: https://lit-scrubland-16272.herokuapp.com/
+*  Online (Heroku) Link: border: https://salty-depths-49587.herokuapp.com/
 *
 ********************************************************************************/ 
 
@@ -16,13 +16,15 @@ const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const bodyParser = require("body-parser");
+const exphbs = require("express-handlebars");
 const fs = require('fs');
+
 var app = express();
 
-app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.urlencoded({ extended: true }));
-
 var HTTP_PORT = process.env.PORT || 8080;
+
+
+// ******** MULTER **************************************************
 
 const storage = multer.diskStorage({
    destination: "./public/images/uploaded",
@@ -33,22 +35,72 @@ const storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
-// call this function after the http server starts listening for requests
+
+// ******** SET UP **************************************************
+
+app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(function(req, res, next) {
+   let route = req.baseUrl + req.path;
+   app.locals.activeRoute = (route == "/") ? "/" : route.replace(/\/$/,"");
+   next();
+});
+
+app.engine('.hbs', exphbs({   extname: '.hbs', 
+                              defaultLayout: 'main', 
+                              helpers: {
+                                          navLink: function(url, options){
+                                                   return '<li' + ((url == app.locals.activeRoute) ? ' class="active" ' : '') + 
+                                          '><a href="' + url + '">' + options.fn(this) + '</a></li>'; 
+                                          },
+                                          equal: function (lvalue, rvalue, options) {
+                                             if (arguments.length < 3)
+                                                throw new Error("Handlebars Helper equal needs 2 parameters");
+                                             if (lvalue != rvalue) {
+                                                return options.inverse(this);
+                                             } else {
+                                                return options.fn(this);
+                                             }
+                                          }
+                              } 
+                           })
+);
+
+app.set('view engine', '.hbs');
+
+
+// ******** Listening function **************************************************
+
 function onHttpStart() {
   console.log("Express http server listening on: " + HTTP_PORT);
 }
 
+
 // ******** GET METHODS **************************************************
 
 app.get("/", function(req,res){
-   res.sendFile(path.join(__dirname, "/views/home.html"));
+   res.render('home');
 });
 
 app.get("/about", function(req,res){
-   res.sendFile(path.join(__dirname, "/views/about.html"));
+   res.render('about');
 });
 
-//  EMPLOYEE
+app.get("/employees/add", function(req,res) {
+   res.render('addEmployee');
+});
+
+app.get("/images/add", function(req,res) {
+   res.render('addImage');
+});
+
+// 404
+app.get('*', function(req, res){
+   res.render('404');
+ });
+
+
+// ******** Employee  **************************************************
 
 app.get('/employee/:employeeNum', (req, res) => {
    dataService.getEmployeesByNum(req.params.employeeNum)
@@ -80,37 +132,27 @@ app.get("/employees", function(req,res) {
    }
 });
 
-app.get("/employees/add", function(req,res) {
-   res.sendFile(path.join(__dirname, "/views/addEmployee.html"));
-});
-
 app.get("/managers", function(req,res) {
    dataService.getAllManagers().then( function(data) {
       return res.json(data);
    }).catch((err) => { "Error: " + err });
 });
 
-// ******** IMAGES ********************************************** //
+// ******** Images ********************************************** //
+
 app.get("/images", function (req,res) {
     fs.readdir("./public/images/uploaded", function(err, data) {
-        res.json({images:data}); 
+      res.render("images", {images:data});
     });
 });
 
-app.get("/images/add", function(req,res) {
-   res.sendFile(path.join(__dirname, "/views/addImage.html"));
-});
 
-// DEPARTMENTS
+// ******** Departments **************************************************
+
 app.get("/departments", function(req,res) {
    dataService.getAllDepartments().then( function(data) {
       return res.json(data);
    }).catch((err) => { "Error: " + err });
-});
-
-// 404
-app.get('*', function(req, res){
-  res.sendFile(path.join(__dirname, "/views/404.html"));
 });
 
 
