@@ -115,7 +115,7 @@ app.get("/managers", function(req,res) {
 // ******** IMAGES ********************************************** //
 app.get("/images", function (req,res) {
     fs.readdir("./public/images/uploaded", function(err, data) {
-        res.json({images:data}); 
+        res.render('images', {images:data});
     });
 });
 
