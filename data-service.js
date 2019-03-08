@@ -49,8 +49,9 @@ module.exports.getAllEmployees = function() {
 module.exports.getEmployeesByStatus = function(status){
   return new Promise((resolve, reject) => {
       let filteredEmployees = employees.filter(employees => employees.status == status);
-      // if(filteredEmployees.length == 0)
-      // reject("No results returned");
+      if(filteredEmployees.length == 0) {
+        reject("No results returned");
+      }
       resolve(filteredEmployees);
   });
 }
@@ -58,6 +59,9 @@ module.exports.getEmployeesByStatus = function(status){
 module.exports.getEmployeesByDepartment = function(department){
   return new Promise((resolve, reject) => {
       let filteredEmployees = employees.filter(employee => employee.department == department);
+      if(filteredEmployees.length == 0) {
+        reject("No results returned");
+      }
       resolve(filteredEmployees);
   });
 }
@@ -65,8 +69,9 @@ module.exports.getEmployeesByDepartment = function(department){
 module.exports.getEmployeesByManager = function(manager){
   return new Promise((resolve, reject) => {
       let filteredEmployees = employees.filter(employee => employee.employeeManagerNum == manager);
-      // if(filteredEmployees.length == 0)
-      // reject("No results returned");
+      if(filteredEmployees.length == 0) {
+        reject("No results returned");
+      }
       resolve(filteredEmployees);
   });
 }
@@ -74,9 +79,10 @@ module.exports.getEmployeesByManager = function(manager){
 module.exports.getEmployeesByNum = function(num){
   return new Promise((resolve, reject) => {
       let filteredEmployees = employees.filter(employee => employee.employeeNum == num);
+      if(filteredEmployees.length == 0) {
+        reject("No results returned");
+      }
       resolve(filteredEmployees);
-      // if(filteredEmployees.length == 0)
-      // reject("No results returned");
   });
 }
 
@@ -103,22 +109,6 @@ module.exports.addEmployee = (employeeData) => {
     }
   })
 }
-
-module.exports.updateEmployee = (employeeData) => {
-  employeeData.isManager = (employeeData.isManager) ? true : false;
-  return new Promise((resolve, reject) => {
-      for (let i = 0; i < employess.length; i++) {
-          if (employess[i].employeeNum == employeeData.employeeNum) {
-              employess.splice(employeeData.employeeNum - 1, 1, employeeData);
-          }
-      }
-      if (employess.length == 0) {
-          reject("No Result Returned!!!");
-      }
-      resolve(employess);
-  });
-}
-
  /******** DEPARTMENT FUNCTIONS *******************************/
 
 module.exports.getAllDepartments = function() {
