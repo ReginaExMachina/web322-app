@@ -111,6 +111,7 @@ app.get('/employee/:employeeNum', (req, res) => {
 
 app.get("/employees", function(req,res) {
    if (req.query.status) {
+<<<<<<< HEAD
       dataService.getEmployeesByStatus(req.query.status).then( function(data) {
          res.render("employees", {employees: data});
       }).catch((err) => { "Error: " + err });      
@@ -118,11 +119,24 @@ app.get("/employees", function(req,res) {
    else if (req.query.department) {
       dataService.getEmployeesByDepartment(req.query.department).then( function(data) {
          res.render("employees", {employees: data});
+=======
+      dataService.getEmployeesByStatus(req.query.department).then( function(data) {
+         return res.json(data);
+      }).catch((err) => { "Error: " + err });      
+   }
+   else if (req.query.department) {
+      dataService.getEmployeesByDepartment(req.query.status).then( function(data) {
+         return res.json(data);
+>>>>>>> parent of 7dad3ec... Finish Web Assignment 3
       }).catch((err) => { "Error: " + err });      
    }
    else if (req.query.manager) {
       dataService.getEmployeesByManager(req.query.manager).then( function(data) {
+<<<<<<< HEAD
          res.render("employees", {employees: data});
+=======
+         return res.json(data);
+>>>>>>> parent of 7dad3ec... Finish Web Assignment 3
       }).catch((err) => { "Error: " + err });      
    }
    else {
