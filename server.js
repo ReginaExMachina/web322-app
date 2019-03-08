@@ -75,8 +75,8 @@ app.get("/about", function(req,res){
 app.get('/employee/:employeeNum', (req, res) => {
    dataService.getEmployeesByNum(req.params.employeeNum)
    .then( function(data) {
-      return res.render("employee", {employee: data}); 
-   }).catch(() => { res.render("employee",{ message:"no results" }); } );
+      res.render("employee", { employee: data[0] });
+   }).catch(() => { res.render("employee", { message:"no results" }); } );
 });
 
 app.get("/employees", function(req,res) {
@@ -149,8 +149,9 @@ app.post("/employees/add", (req, res) => {
 });
 
 app.post("/employee/update", (req, res) => {
-   console.log(req.body);
-   res.redirect("/employees");
+   dataService.updateEmployee(req.body).then (
+      res.redirect("/employees")
+   ).catch((err) => { "Error: " + err});
 });
 
 

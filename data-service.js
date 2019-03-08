@@ -110,42 +110,23 @@ module.exports.addEmployee = (employeeData) => {
   })
 }
 
-module.exports.updateEmployee = function(employeeData){
-  return new Promise(function (resolve, reject) {
-      employeeData.isManager = (employeeData.isManager) ? true : false;
-      for (const prop in employeeData) {
-          if (employeeData[prop] == "") employeeData[prop] = null;
-      };
-      Employees.update(
-      {
-          employeeNum: employeeData.employeeNum,
-          firstName: employeeData.firstName,
-          lastName: employeeData.lastName,
-          email: employeeData.email,
-          SSN: employeeData.SSN,
-          addressStreet: employeeData.addressStreet,
-          addressCity: employeeData.addressCity,
-          addressState: employeeData.addressState,
-          addressPostal: employeeData.addressPostal,
-          maritalStatus: employeeData.maritalStatus,
-          isManager: employeeData.isManager,
-          employeeManagerNum: employeeData.employeeManagerNum,
-          status: employeeData.status,
-          department: employeeData.department,
-          hireDate: employeeData.hireDate
-      },
-      {
-          where:{employeeNum:employeeData.employeeNum}
-      })
-      .then(()=>{
-          console.log("Updated employee.");
-          resolve(Employees);
-      })
-      .catch(()=>{
-          reject("Failed to update employee.");
-      });   
-  });
-};
+module.exports.updateEmployee = function(employeeData) {
+  return new Promise((resolve, reject) => {
+    for (var i = 0; i <employees.length; i++) {
+      if (employeeData.employeeNum == employees[i].employeeNum) {
+        var emp = employees[i];
+        for (n in emp) {
+          emp[n] = employeeData[n];
+        }
+        resolve();
+      }
+      else {
+        var errorMsg = "No employee with employee number" + employeeData.employeeNum;
+        reject(errorMsg);
+      }
+    }
+  })
+}
 
  /******** DEPARTMENT FUNCTIONS *******************************/
 
