@@ -112,30 +112,24 @@ app.get('/employee/:employeeNum', (req, res) => {
 app.get("/employees", function(req,res) {
    if (req.query.status) {
       dataService.getEmployeesByStatus(req.query.status).then( function(data) {
-         res.json(data);
+         res.render("employees", {employees: data});
       }).catch((err) => { "Error: " + err });      
    }
    else if (req.query.department) {
       dataService.getEmployeesByDepartment(req.query.department).then( function(data) {
-         res.json(data);
+         res.render("employees", {employees: data});
       }).catch((err) => { "Error: " + err });      
    }
    else if (req.query.manager) {
       dataService.getEmployeesByManager(req.query.manager).then( function(data) {
-         res.json(data);
+         res.render("employees", {employees: data});
       }).catch((err) => { "Error: " + err });      
    }
    else {
       dataService.getAllEmployees().then( function(data) {
-         return res.json(data);
+         res.render("employees", {employees: data});
       }).catch((err) => { "Error: " + err });
    }
-});
-
-app.get("/managers", function(req,res) {
-   dataService.getAllManagers().then( function(data) {
-      return res.json(data);
-   }).catch((err) => { "Error: " + err });
 });
 
 // ******** Images ********************************************** //
@@ -151,7 +145,7 @@ app.get("/images", function (req,res) {
 
 app.get("/departments", function(req,res) {
    dataService.getAllDepartments().then( function(data) {
-      return res.json(data);
+      res.render("departments", {departments: data});
    }).catch((err) => { "Error: " + err });
 });
 
@@ -168,6 +162,14 @@ app.post("/employees/add", (req, res) => {
    ).catch((err) => { "Error: " + err});
 });
 
+app.post("/employee/update", (req, res) => {
+   data_service.updateEmployee(req.body).then((data) => {
+       console.log(req.body);
+       res.redirect("/employees");
+   }).catch((err) => {
+       console.log(err);
+   })
+});
 
 // ******** SERVER LISTENS **************************************************
 

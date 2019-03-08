@@ -109,6 +109,22 @@ module.exports.addEmployee = (employeeData) => {
     }
   })
 }
+
+module.exports.updateEmployee = (employeeData) => {
+  employeeData.isManager = (employeeData.isManager) ? true : false;
+  return new Promise((resolve, reject) => {
+      for (let i = 0; i < employess.length; i++) {
+          if (employess[i].employeeNum == employeeData.employeeNum) {
+              employess.splice(employeeData.employeeNum - 1, 1, employeeData);
+          }
+      }
+      if (employess.length == 0) {
+          reject("No Result Returned!!!");
+      }
+      resolve(employess);
+  });
+}
+
  /******** DEPARTMENT FUNCTIONS *******************************/
 
 module.exports.getAllDepartments = function() {
