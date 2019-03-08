@@ -28,16 +28,16 @@ app.engine('.hbs', exphbs({
    helpers: {
       navLink: function(url, options){return '<li' + ((url == app.locals.activeRoute) ? ' class="active" ' : '') + 
       '><a href="' + url + '">' + options.fn(this) + '</a></li>';
-      }
-    },
-    equal: function (lvalue, rvalue, options) {
-      if (arguments.length < 3)
-         throw new Error("Handlebars Helper equal needs 2 parameters");
-      if (lvalue != rvalue) {
-         return options.inverse(this);
-      } 
-      else {
-         return options.fn(this); 
+      },
+      equal: function (lvalue, rvalue, options) {
+         if (arguments.length < 3)
+            throw new Error("Handlebars Helper equal needs 2 parameters");
+         if (lvalue != rvalue) {
+            return options.inverse(this);
+         } 
+         else {
+            return options.fn(this); 
+         }
       }
    }
 }));
@@ -74,31 +74,31 @@ app.get("/about", function(req,res){
 
 app.get('/employee/:employeeNum', (req, res) => {
    dataService.getEmployeesByNum(req.params.employeeNum)
-   .then((data) => {
-      res.json(data);
-   })
+   .then( function(data) {
+      return res.render("employee", {employee: data}); 
+   }).catch(() => { res.render("employee",{ message:"no results" }); } );
 });
 
 app.get("/employees", function(req,res) {
    if (req.query.status) {
       dataService.getEmployeesByStatus(req.query.status).then( function(data) {
-         res.json(data);
-      }).catch((err) => { "Error: " + err });      
+         res.render("employees", {employees: data});
+      }).catch(() => { res.render({ message: "no results" }); });      
    }
    else if (req.query.department) {
       dataService.getEmployeesByDepartment(req.query.department).then( function(data) {
-         res.json(data);
-      }).catch((err) => { "Error: " + err });      
+         res.render("employees", { employees: data });
+      }).catch(() => { res.render({ message: "no results" }); });      
    }
    else if (req.query.manager) {
       dataService.getEmployeesByManager(req.query.manager).then( function(data) {
-         res.json(data);
-      }).catch((err) => { "Error: " + err });      
+         res.render("employees", {employees: data});
+      }).catch(() => { res.render({ message: "no results" }); });      
    }
    else {
       dataService.getAllEmployees().then( function(data) {
-         return res.json(data);
-      }).catch((err) => { "Error: " + err });
+         return res.render("employees", {employees: data});
+      }).catch(() => { res.render({ message: "no results" }); });
    }
 });
 
@@ -126,7 +126,7 @@ app.get("/images/add", function(req,res) {
 // DEPARTMENTS
 app.get("/departments", function(req,res) {
    dataService.getAllDepartments().then( function(data) {
-      return res.json(data);
+      return  res.render("departments", {departments: data});
    }).catch((err) => { "Error: " + err });
 });
 
@@ -146,6 +146,11 @@ app.post("/employees/add", (req, res) => {
    dataService.addEmployee(req.body).then (
       res.redirect("/employees")
    ).catch((err) => { "Error: " + err});
+});
+
+app.post("/employee/update", (req, res) => {
+   console.log(req.body);
+   res.redirect("/employees");
 });
 
 
