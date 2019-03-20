@@ -82,22 +82,22 @@ app.get('/employee/:employeeNum', (req, res) => {
 app.get("/employees", function(req,res) {
    if (req.query.status) {
       dataService.getEmployeesByStatus(req.query.status).then( function(data) {
-         res.render("employees", {employees: data});
+         res.render("employees", { message: "no results" });
       }).catch(() => { res.render({ message: "no results" }); });      
    }
    else if (req.query.department) {
       dataService.getEmployeesByDepartment(req.query.department).then( function(data) {
-         res.render("employees", { employees: data });
+         res.render("employees", { message: "no results" });
       }).catch(() => { res.render({ message: "no results" }); });      
    }
    else if (req.query.manager) {
       dataService.getEmployeesByManager(req.query.manager).then( function(data) {
-         res.render("employees", {employees: data});
+         res.render("employees", { message: "no results" });
       }).catch(() => { res.render({ message: "no results" }); });      
    }
    else {
       dataService.getAllEmployees().then( function(data) {
-         return res.render("employees", {employees: data});
+         return res.render("employees", { message: "no results" });
       }).catch(() => { res.render({ message: "no results" }); });
    }
 });
@@ -124,10 +124,22 @@ app.get("/images/add", function(req,res) {
 });
 
 // DEPARTMENTS
+app.get('/department/:departmentId', (req, res) => {
+   dataService.getDepartmentById(req.params.id)
+   .then( function(data) {
+      res.render("department", { department: data[0] });
+   }).catch(() => { res.status(404).send("Department Not Found"); })
+});
+
+
 app.get("/departments", function(req,res) {
    dataService.getAllDepartments().then( function(data) {
-      return  res.render("departments", {departments: data});
+      return res.render("departments",{ message: "no results" });
    }).catch((err) => { "Error: " + err });
+});
+
+app.get("/departments/add", function(req,res) {
+   res.render("addDepartment");
 });
 
 // 404
@@ -151,6 +163,18 @@ app.post("/employees/add", (req, res) => {
 app.post("/employee/update", (req, res) => {
    dataService.updateEmployee(req.body).then (
       res.redirect("/employees")
+   ).catch((err) => { "Error: " + err});
+});
+
+app.post("/departments/add", (req, res) => {
+   dataService.addDepartment(req.body).then (
+      res.redirect("/departments")
+   ).catch((err) => { "Error: " + err});
+});
+
+app.post("/department/update", (req, res) => {
+   dataService.updateDepartment(req.body).then (
+      res.redirect("/departments")
    ).catch((err) => { "Error: " + err});
 });
 

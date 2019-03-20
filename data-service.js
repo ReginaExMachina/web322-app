@@ -171,6 +171,20 @@ module.exports.getAllDepartments = function() {
   });
 };
 
+module.exports.getDepartmentById = function (num){
+  return new Promise(function (resolve, reject) {
+      Departments.findAll({
+          where:{departmentId:num}
+      })
+      .then((data)=>{
+          resolve(data[0]);
+      })
+      .catch(()=>{
+          reject("No results returned.");
+      })
+  });
+};
+
 
  /******** ADDING... *******************************/
 
@@ -206,6 +220,26 @@ module.exports.addEmployee = function(employeeData) {
     }).catch(()=>{
       reject("Unable to create employee");
     });
+  });
+};
+
+
+module.exports.addDepartment = function(departmentData){
+  return new Promise(function (resolve, reject) {
+      for (const n in departmentData) {
+          if (departmentData[n] == "") departmentData[n] = null;
+      };
+      Departments.create({
+          departmentId: departmentData.departmentId,
+          departmentName: departmentData.departmentName
+      })
+      .then(()=>{
+          console.log("Created department.");
+          resolve(Departments[1]);
+      })
+      .catch(()=>{
+          reject("Unable to create department.");
+      });   
   });
 };
 
@@ -245,5 +279,28 @@ module.exports.updateEmployee = (employeeData) => {
       }).catch(()=> {
           reject("Unable to update employee.");
       });
+  });
+};
+
+module.exports.updateDepartment = function(departmentData){
+  return new Promise(function (resolve, reject) {
+      for (const n in departmentData) {
+          if (departmentData[n] == "") departmentData[n] = null;
+      };
+      Departments.update(
+      {
+          departmentId: departmentData.departmentId,
+          departmentName: departmentData.departmentName
+      },
+      {
+          where:{departmentId:departmentData.departmentId}
+      })
+      .then(()=>{
+          console.log("Department updated.");
+          resolve(Departments);
+      })
+      .catch(()=>{
+          reject("Unable to update department.");
+      });   
   });
 };
