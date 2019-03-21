@@ -73,10 +73,34 @@ app.get("/about", function(req,res){
 //  EMPLOYEE
 
 app.get('/employee/:employeeNum', (req, res) => {
-   dataService.getEmployeesByNum(req.params.employeeNum)
-   .then( function(data) {
-      res.render("employee", { employee: data[0] });
-   }).catch(() => { res.render("employee", { message:"no results" }); } );
+    let viewData = {};
+    dataService.getEmployeeByNum(req.params.empNum).then((data) => {
+        if (data) {
+            viewData.employee = data;
+        }
+        else {
+            viewData.employee = null;
+        }
+    }).catch(() => {
+        viewData.employee = null;
+    }).then(dataService.getDepartments)
+    .then((data) => {
+        viewData.departments = data;
+
+        for (let i = 0; i < viewData.departments.length; i++) {
+            if (viewData.departments[i].departmentId == viewData.employee.department) {
+                viewData.departments[i].selected = true;
+            }
+        }
+    }).catch(() => {
+        viewData.departments = [];
+    }).then(() => {
+        if (viewData.employee == null) {
+            res.status(404).send("Employees Not Found");
+        } else {
+            res.render("employee", { viewData: viewData});
+        }
+    });
 });
 
 app.get("/employees", function(req,res) {
