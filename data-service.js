@@ -316,7 +316,7 @@ module.exports.deleteEmployeeByNum = function(num){
             resolve("Employee Deleted.");
         })
         .catch(()=>{
-            reject("Unable to Remove Employee / Employee not found.");
+            reject("Failed to delete employee.");
         })
     })
 }
