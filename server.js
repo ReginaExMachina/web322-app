@@ -142,6 +142,17 @@ app.get("/managers", function(req,res) {
    }).catch((err) => { "Error: " + err });
 });
 
+app.get("/employees/delete/:num", (req,res)=>{
+    var num = req.params.num;
+    dataservice.deleteEmployeeByNum(num)
+    .then(()=>{
+        res.redirect("/employees");
+    })
+    .catch(()=>{
+        res.status(500).send("Unable to Remove Employee / Employee not found)");
+    })
+});
+
 // ******** IMAGES ********************************************** //
 app.get("/images", function (req,res) {
     fs.readdir("./public/images/uploaded", function(err, data) {
