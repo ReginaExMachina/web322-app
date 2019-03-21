@@ -102,8 +102,14 @@ app.get("/employees", function(req,res) {
    }
 });
 
-app.get("/employees/add", function(req,res) {
-   res.render("addEmployee");
+app.get("/employees/add", (req, res, departments) => {
+    dataservice.getDepartments()
+    .then((data)=> {
+        res.render("addEmployee", {departments: data});
+    })
+    .catch(()=> {
+        res.render("addEmployee", {departments: []}) 
+    });
 });
 
 app.get("/managers", function(req,res) {
