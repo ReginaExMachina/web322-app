@@ -304,3 +304,19 @@ module.exports.updateDepartment = function(departmentData){
       });   
   });
 };
+
+ /******** DELETING... *******************************/
+
+module.exports.deleteEmployeeByNum = function(num){
+    return new Promise(function (resolve,reject){
+        Employees.destroy({
+            where:{employeeNum:num}
+        })
+        .then(()=>{
+            resolve("Employee Deleted.");
+        })
+        .catch(()=>{
+            reject("Unable to Remove Employee / Employee not found.");
+        })
+    })
+}
