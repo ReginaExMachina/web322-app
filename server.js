@@ -83,7 +83,7 @@ app.get('/employee/:employeeNum', (req, res) => {
         }
     }).catch(() => {
         viewData.employee = null;
-    }).then(dataService.getDepartments)
+    }).then(dataService.getAllDepartments)
     .then((data) => {
         viewData.departments = data;
 
@@ -127,7 +127,7 @@ app.get("/employees", function(req,res) {
 });
 
 app.get("/employees/add", (req, res, departments) => {
-    dataservice.getDepartments()
+    dataService.getAllDepartments()
     .then((data)=> {
         res.render("addEmployee", {departments: data});
     })
