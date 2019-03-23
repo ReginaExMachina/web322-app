@@ -53,16 +53,13 @@ var Department = sequelize.define('Department', {
 
  ***************************************/
 
-module.exports.initialize = function () {
-  return new Promise((resolve, reject)=>{
-    sequelize.sync().then(()=>{
-        console.log("Connected to database.");
-        resolve();
-    }).catch(()=>{
-        reject("Unable to sync the database");
-    });
-  });
-};
+module.exports.initialize = () => new Promise((resolve, reject) => {
+  sequelize.sync().then(function() {
+    resolve()
+  }).catch(() => {
+    reject('Unable to sync database.')
+  })
+})
 
  /******** EMPLOYEE FUNCTIONS *******************************/
 
@@ -235,7 +232,7 @@ module.exports.addDepartment = function(departmentData){
       })
       .then(()=>{
           console.log("Created department.");
-          resolve(Departments[1]);
+          resolve();
       })
       .catch(()=>{
           reject("Unable to create department.");
