@@ -159,11 +159,12 @@ app.get("/images/add", function(req,res) {
 });
 
 // DEPARTMENTS
-app.get('/department/:departmentId', (req, res) => {
-   dataService.getDepartmentById(req.params.id)
-   .then( function(data) {
-      res.render("department", { department: data[0] });
-   }).catch(() => { res.status(404).send("Department Not Found"); })
+app.get("/department/:departmentId", (req, res) => {
+   dataService.getDepartmentById(req.params.departmentId).then((data) => {
+       res.render("department", { data: data });
+   }).catch((err) => {
+       res.status(404).send("Department Not Found");
+   });
 });
 
 
@@ -202,9 +203,9 @@ app.post("/employee/update", (req, res) => {
 });
 
 app.post("/departments/add", (req, res) => {
-   dataService.addDepartment(req.body).then (
-      res.redirect("/departments")
-   ).catch((err) => { "Error: " + err});
+   dataService.addDepartment(req.body).then(() => {
+       res.redirect("/departments");
+   }).catch((err) => { "Error: " + err});
 });
 
 app.post("/department/update", (req, res) => {

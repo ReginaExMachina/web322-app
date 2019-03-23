@@ -190,19 +190,17 @@ module.exports.getAllDepartments = function() {
   });
 };
 
-module.exports.getDepartmentById = function (num){
+module.exports.getDepartmentById = function (id) {
   return new Promise(function (resolve, reject) {
-      Departments.findAll({
-          where:{departmentId:num}
-      })
-      .then((data)=>{
+      Department.findAll({
+          where: { departmentId: id }
+      }).then(function (data) {
           resolve(data[0]);
-      })
-      .catch(()=>{
+      }).catch(function (err) {
           reject("No results returned.");
-      })
+      });
   });
-};
+}
 
 
  /******** ADDING... *******************************/
@@ -243,27 +241,22 @@ module.exports.addEmployee = function(employeeData) {
 };
 
 
-module.exports.addDepartment = function(DepartmentData) {
-  return new Promise(function(resolve, reject) {
-
-    // Ensure blank inputs are NULLs
-    for (let i in DepartmentData) {
-      if (DepartmentData[i] == "") {
-          DepartmentData[i] = null;
+module.exports.addDepartment = function (departmentData) {
+  return new Promise(function (resolve, reject) {
+      for (var i in departmentData) {
+          if (departmentData[i] == "") {
+              departmentData[i] = null;
+          }
       }
-    }
-
-    Department.create({
-      departmentName: departmentData.departmentName
-      
-    }).then(()=>{
-      console.log("Department created.");
-      resolve();
-    }).catch(()=>{
-      reject("Unable to create department");
-    });
+      Department.create(departmentData)
+      .then(function () {
+          resolve();
+      })
+      .catch(function (err) {
+          reject("Unable to create department.");
+      });
   });
-};
+}
 
  /******** UPDATING... *******************************/
 
@@ -304,28 +297,24 @@ module.exports.updateEmployee = (employeeData) => {
   });
 };
 
-module.exports.updateDepartment = function(departmentData){
+module.exports.updateDepartment = function (departmentData) {
   return new Promise(function (resolve, reject) {
-      for (const n in departmentData) {
-          if (departmentData[n] == "") departmentData[n] = null;
-      };
-      Departments.update(
-      {
-          departmentId: departmentData.departmentId,
-          departmentName: departmentData.departmentName
-      },
-      {
-          where:{departmentId:departmentData.departmentId}
+      for (var i in departmentData) {
+          if (departmentData[i] == "") {
+              departmentData[i] = null;
+          }
+      }
+      Department.update(departmentData, {
+          where: { departmentId: departmentData.departmentId } 
       })
-      .then(()=>{
-          console.log("Department updated.");
-          resolve(Departments);
-      })
-      .catch(()=>{
-          reject("Unable to update department.");
-      });   
+          .then(function () {
+              resolve();
+          })
+          .catch(function (err) {
+              reject("Unable to create department.");
+          });
   });
-};
+}
 
  /******** DELETING... *******************************/
 
