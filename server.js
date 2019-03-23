@@ -72,57 +72,53 @@ app.get("/about", function(req,res){
 
 //  EMPLOYEE
 
-app.get('/employee/:employeeNum', (req, res) => {
-    let viewData = {};
-    dataService.getEmployeeByNum(req.params.empNum).then((data) => {
-        if (data) {
-            viewData.employee = data;
-        }
-        else {
-            viewData.employee = null;
-        }
-    }).catch(() => {
-        viewData.employee = null;
-    }).then(dataService.getAllDepartments)
-    .then((data) => {
-        viewData.departments = data;
+app.get("/employee/:empNum", (req, res) => {
 
-        for (let i = 0; i < viewData.departments.length; i++) {
-            if (viewData.departments[i].departmentId == viewData.employee.department) {
-                viewData.departments[i].selected = true;
-            }
-        }
-    }).catch(() => {
-        viewData.departments = [];
-    }).then(() => {
-        if (viewData.employee == null) {
-            res.status(404).send("Employees Not Found");
-        } else {
-            res.render("employee", { viewData: viewData});
-        }
-    }).catch(()=>{res.status(500).send("Unable to return results.");
-   });
+   // initialize an empty object to store the values
+   let viewData = {};
+   dataService.getEmployeeByNum(req.params.empNum)
+       .then((data) => {
+           viewData.data = data;
+       }).catch(() => {
+           viewData.data = null;
+       }).then(dataService.getDepartments)
+       .then((data) => {
+           viewData.departments = data;
+           for (let i = 0; i < viewData.departments.length; i++) {
+               if (viewData.departments[i].departmentId == viewData.data.department) {
+                   viewData.departments[i].selected = true;
+               }
+           }
+       }).catch(() => {
+           viewData.departments = [];
+       }).then(() => {
+           if (viewData.data == null) {
+               res.status(404).send("Employee Not Found");
+           } else {
+               res.render("employee", { viewData: viewData });      
+           }
+       });
 });
 
 app.get("/employees", function(req,res) {
    if (req.query.status) {
       dataService.getEmployeesByStatus(req.query.status).then( function(data) {
-         res.render("employees", { message: "no results" });
+         res.render("employees", {employees: data});
       }).catch(() => { res.render({ message: "no results" }); });      
    }
    else if (req.query.department) {
       dataService.getEmployeesByDepartment(req.query.department).then( function(data) {
-         res.render("employees", { message: "no results" });
+         res.render("employees", {employees: data});
       }).catch(() => { res.render({ message: "no results" }); });      
    }
    else if (req.query.manager) {
       dataService.getEmployeesByManager(req.query.manager).then( function(data) {
-         res.render("employees", { message: "no results" });
+         res.render("employees", {employees: data});
       }).catch(() => { res.render({ message: "no results" }); });      
    }
    else {
       dataService.getAllEmployees().then( function(data) {
-         return res.render("employees", { message: "no results" });
+         return res.render("employees", {employees: data});
       }).catch(() => { res.render({ message: "no results" }); });
    }
 });
@@ -143,15 +139,12 @@ app.get("/managers", function(req,res) {
    }).catch((err) => { "Error: " + err });
 });
 
-app.get("/employees/delete/:num", (req,res)=>{
-    var num = req.params.num;
-    dataservice.deleteEmployeeByNum(num)
-    .then(()=>{
-        res.redirect("/employees");
-    })
-    .catch(()=>{
-        res.status(500).send("Unable to Remove Employee / Employee not found)");
-    })
+app.get("/employee/delete/:empNum", (req, res) => {
+   dataService.deleteEmployeeByNum(req.params.empNum).then(() => {
+       res.redirect("/employees");
+   }).catch((err) => {
+       res.status(500).send("Unable to Remove Employee / Employee not found");
+   });
 });
 
 // ******** IMAGES ********************************************** //
@@ -176,7 +169,7 @@ app.get('/department/:departmentId', (req, res) => {
 
 app.get("/departments", function(req,res) {
    dataService.getAllDepartments().then( function(data) {
-      return res.render("departments",{ message: "no results" });
+      return res.render("departments",{departments: data});
    }).catch((err) => { "Error: " + err });
 });
 

@@ -72,6 +72,18 @@ module.exports.initialize = () => new Promise((resolve, reject) => {
 
  /******** EMPLOYEE FUNCTIONS *******************************/
 
+ module.exports.getEmployeeByNum = function (num) {
+  return new Promise(function (resolve, reject) {
+      Employee.findAll({
+          where: { employeeNum: num }
+      }).then(function (data) {
+          resolve(data[0]);
+      }).catch(function (err) {
+          reject("No results returned.");
+      });
+  });
+}
+
 module.exports.getAllEmployees = function() {
   return new Promise((resolve, reject)=>{
     Employee.findAll({
@@ -170,6 +182,7 @@ module.exports.getAllDepartments = function() {
     Department.findAll({
       order: ["departmentId"]
     }).then((data)=>{
+      console.log(data);
       resolve(data);
     }).catch(()=>{
       reject("No results returned");
@@ -230,22 +243,25 @@ module.exports.addEmployee = function(employeeData) {
 };
 
 
-module.exports.addDepartment = function(departmentData){
-  return new Promise(function (resolve, reject) {
-      for (const n in departmentData) {
-          if (departmentData[n] == "") departmentData[n] = null;
-      };
-      Departments.create({
-          departmentId: departmentData.departmentId,
-          departmentName: departmentData.departmentName
-      })
-      .then(()=>{
-          console.log("Created department.");
-          resolve();
-      })
-      .catch(()=>{
-          reject("Unable to create department.");
-      });   
+module.exports.addDepartment = function(DepartmentData) {
+  return new Promise(function(resolve, reject) {
+
+    // Ensure blank inputs are NULLs
+    for (let i in DepartmentData) {
+      if (DepartmentData[i] == "") {
+          DepartmentData[i] = null;
+      }
+    }
+
+    Department.create({
+      departmentName: departmentData.departmentName
+      
+    }).then(()=>{
+      console.log("Department created.");
+      resolve();
+    }).catch(()=>{
+      reject("Unable to create department");
+    });
   });
 };
 
@@ -313,16 +329,15 @@ module.exports.updateDepartment = function(departmentData){
 
  /******** DELETING... *******************************/
 
-module.exports.deleteEmployeeByNum = function(num){
-    return new Promise(function (resolve,reject){
-        Employees.destroy({
-            where:{employeeNum:num}
-        })
-        .then(()=>{
-            resolve("Employee Deleted.");
-        })
-        .catch(()=>{
-            reject("Failed to delete employee.");
-        })
-    })
+ module.exports.deleteEmployeeByNum = function (empNum) {
+  return new Promise(function (resolve, reject) {
+      Employee.destroy({
+          where: { employeeNum: empNum }
+      }).then(function () {
+          resolve();
+      })
+      .catch(function (err) {
+          reject("Unable to delete employee.");
+      });
+  });
 }
