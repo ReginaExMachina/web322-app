@@ -12,17 +12,6 @@
 
 var dataService = require('./data-service.js');
 
-const Sequelize = require('sequelize');
-
-var sequelize = new Sequelize('d38m999qv8ds7f', 'blpukoropsahyc', '4b008739258eb7c856bcd5aeefb0a18293e63f3afb3457b35c08ca09ef153adf', {
-  host: 'ec2-23-23-241-119.compute-1.amazonaws.com',
-  dialect: 'postgres',
-  port: 5432,
-  dialectOptions: {
-     ssl: true
-  }
-});
-
 const path = require("path");
 const express = require("express");
 const multer = require("multer");
@@ -68,15 +57,7 @@ var upload = multer({ storage: storage });
 
 // call this function after the http server starts listening for requests
 function onHttpStart() {
-   console.log("Express http server listening on " + HTTP_PORT);
-   sequelize.authenticate().then(function() {
-       console.log('Connection has been established successfully.');
-       sequelize.sync().then(()=>{
-           console.log("Database syncronized successfully");
-       });
-   }).catch(function(err) {
-       console.log('Unable to connect to the database:', err);
-   });
+  console.log("Express http server listening on: " + HTTP_PORT);
 }
 
 // ******** GET METHODS **************************************************

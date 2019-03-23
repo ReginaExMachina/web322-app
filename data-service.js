@@ -10,6 +10,15 @@ var sequelize = new Sequelize('d38m999qv8ds7f', 'blpukoropsahyc', '4b008739258eb
   }
 });
 
+sequelize
+    .authenticate()
+    .then(function() {
+        console.log('Connection has been established successfully.');
+    })
+    .catch(function(err) {
+        console.log('Unable to connect to the database:', err);
+    });
+
 /***************************************
 
  * Models
