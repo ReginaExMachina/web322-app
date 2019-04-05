@@ -90,12 +90,12 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-   res.session.rest();
+   req.session.reset();
    res.redirect("/");
 });
 
-app.get("/userHistory", ensureLogin, (req, res) => {
-   res.render("userHistory, {user: req.session.user}");
+app.get("/userHistory", ensureLogin, (req, res)=>{
+   res.render("userHistory",{user: req.session.user});
 });
 
 app.get("/register", (req, res) => {

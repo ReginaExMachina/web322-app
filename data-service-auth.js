@@ -16,7 +16,7 @@ var userSchema = new Schema({
 let User;
 module.exports.initialize = function () {
     return new Promise(function (resolve, reject) {
-        let db = mongoose.createConnection("mongodb+srv://dbRday:T3%40c%40k3%24@senecaweb-cfspd.mongodb.net/web322_a6?retryWrites=true");
+        let db = mongoose.createConnection("mongodb://dbRday:T3%40c%40k3%24@senecaweb-shard-00-00-cfspd.mongodb.net:27017,senecaweb-shard-00-01-cfspd.mongodb.net:27017,senecaweb-shard-00-02-cfspd.mongodb.net:27017/web322_a6?ssl=true&replicaSet=SenecaWeb-shard-0&authSource=admin&retryWrites=true");
         db.on('error', (err)=>{
             reject(err);
         });

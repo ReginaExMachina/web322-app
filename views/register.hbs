@@ -15,7 +15,7 @@
                     <strong>Error:</strong>
                     {{errorMessage}}
                 </div>
-            {{else}}
+            {{/if}}
                 <form method="post" action="/register">
                     <div class="row">
                         <div class="col-md-12">
@@ -47,7 +47,7 @@
                     </div>
                     <input type="submit" class="btn btn-success pull-right" text = "Register" value="Register">
                 </form>
-            {{/if}}
+            
         {{/if}}
     </div>
 </div>
